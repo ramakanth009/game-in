@@ -1,0 +1,157 @@
+.game-screen {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.game-header {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.game-title {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.game-container {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 25px;
+}
+
+.control-button {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  border: none;
+  background-color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.control-button:hover {
+  transform: scale(1.1);
+}
+
+.control-button.no-button {
+  color: #ff4d6d;
+}
+
+.control-button.yes-button {
+  color: #4ecdc4;
+}
+
+.control-button.no-button:hover {
+  background-color: #ff4d6d;
+  color: white;
+  box-shadow: 0 8px 20px rgba(255, 77, 109, 0.3);
+}
+
+.control-button.yes-button:hover {
+  background-color: #4ecdc4;
+  color: white;
+  box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
+}
+
+.fa-arrow-left, .fa-arrow-right {
+  transition: transform 0.3s ease;
+}
+
+.control-button:hover .fa-arrow-left {
+  transform: translateX(-3px);
+}
+
+.control-button:hover .fa-arrow-right {
+  transform: translateX(3px);
+}
+
+/* Keyboard hint */
+.keyboard-hint {
+  margin-top: 15px;
+  font-size: 0.8rem;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.keyboard-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .game-title {
+    font-size: 1.6rem;
+  }
+  
+  .game-container {
+    height: 450px;
+  }
+  
+  .control-button {
+    width: 55px;
+    height: 55px;
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-screen {
+    padding: 15px 10px;
+  }
+  
+  .game-title {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+  }
+  
+  .game-container {
+    height: 420px;
+  }
+  
+  .controls {
+    gap: 30px;
+    margin-top: 20px;
+  }
+  
+  .control-button {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+  
+  .keyboard-hint {
+    display: none;
+  }
+}
