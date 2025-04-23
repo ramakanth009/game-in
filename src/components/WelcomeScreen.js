@@ -87,29 +87,31 @@ const WelcomeScreen = ({ onStartGame }) => {
   return (
     <div className="welcome-screen">
       <div className="floating-icons" ref={floatingIconsRef}>
-        <div className="floating-icon code">{'</>'}</div>
-        <div className="floating-icon data">📊</div>
-        <div className="floating-icon security">🔒</div>
-        <div className="floating-icon design">🎨</div>
-        <div className="floating-icon marketing">📱</div>
+        <div className="floating-icon code" aria-hidden="true">{'</>'}</div>
+        <div className="floating-icon data" aria-hidden="true">📊</div>
+        <div className="floating-icon security" aria-hidden="true">🔒</div>
+        <div className="floating-icon design" aria-hidden="true">🎨</div>
+        <div className="floating-icon marketing" aria-hidden="true">📱</div>
       </div>
       
-      <h1 className="welcome-title" ref={titleRef}>
-        Tech Career Path Finder
-      </h1>
-      
-      <p className="welcome-subtitle" ref={subtitleRef}>
-        Discover your ideal tech career path by answering a series of "This or That" questions. 
-        Swipe right for your preferred choice, or left for the other option.
-      </p>
-      
-      <button 
-        className="start-button" 
-        ref={buttonRef}
-        onClick={onStartGame}
-      >
-        Start Your Journey
-      </button>
+      <div className="welcome-content">
+        <h1 className="welcome-title" ref={titleRef}>
+          Tech Career Path Finder
+        </h1>
+        
+        <p className="welcome-subtitle" ref={subtitleRef}>
+          Discover your ideal tech career path by answering a series of "This or That" questions. 
+          Swipe right for your preferred choice, or left for the other option.
+        </p>
+        
+        <button 
+          className="start-button" 
+          ref={buttonRef}
+          onClick={onStartGame}
+        >
+          Start Your Journey
+        </button>
+      </div>
     </div>
   );
 };
