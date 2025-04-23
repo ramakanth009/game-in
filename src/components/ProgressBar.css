@@ -1,6 +1,7 @@
 .progress-container {
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  max-width: 500px;
 }
 
 .progress-text {
@@ -13,6 +14,11 @@
   font-weight: 500;
 }
 
+.progress-percentage {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
 .progress-bar {
   width: 100%;
   height: 8px;
@@ -21,6 +27,7 @@
   overflow: hidden;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   position: relative;
+  margin-bottom: 15px;
 }
 
 .progress {
@@ -46,6 +53,85 @@
   animation: shimmer 1.5s infinite;
 }
 
+/* Step indicators */
+.step-indicators {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.step-indicators.simplified {
+  justify-content: space-between;
+}
+
+.step-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  transition: all 0.3s ease;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.step-indicator.active {
+  background-color: var(--primary-color);
+  transform: scale(1.2);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.step-indicator.completed {
+  background-color: var(--secondary-color);
+}
+
+.step-indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.step-indicator.active::after {
+  opacity: 1;
+}
+
+.step-divider {
+  flex: 1;
+  height: 2px;
+  background-color: #e5e7eb;
+  margin: 0 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-indicators.simplified .step-divider {
+  flex: 1;
+}
+
+.step-divider::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: var(--secondary-color);
+  transition: width 0.5s ease;
+}
+
+.step-indicator.completed + .step-divider::after {
+  width: 100%;
+}
+
 @keyframes shimmer {
   0% {
     transform: translateX(-100%) skewX(-20deg);
@@ -63,5 +149,11 @@
   
   .progress-bar {
     height: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .step-indicator {
+    width: 10px;
+    height: 10px;
   }
 }

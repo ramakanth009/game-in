@@ -4,6 +4,7 @@ import './SoundToggle.css';
 
 const SoundToggle = ({ soundEnabled, toggleSound }) => {
   const buttonRef = useRef(null);
+  const [showTooltip, setShowTooltip] = useState(false);
   
   useEffect(() => {
     // Animate button appearance
@@ -49,6 +50,24 @@ const SoundToggle = ({ soundEnabled, toggleSound }) => {
         }, 50);
       }
     });
+    
+    // Add button press animation
+    anime({
+      targets: buttonRef.current,
+      scale: [1, 0.9, 1],
+      duration: 300,
+      easing: 'easeInOutQuad'
+    });
+  };
+  
+  // Handle mouse enter to show tooltip
+  const handleMouseEnter = () => {
+    setShowTooltip(true);
+  };
+  
+  // Handle mouse leave to hide tooltip
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
   };
 
   return (
@@ -56,10 +75,16 @@ const SoundToggle = ({ soundEnabled, toggleSound }) => {
       className="sound-toggle" 
       ref={buttonRef}
       onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
-      title={soundEnabled ? "Sound On" : "Sound Off"}
     >
       <i className={`fas ${soundEnabled ? 'fa-volume-up' : 'fa-volume-mute'}`}></i>
+      {showTooltip && (
+        <span className="sound-tooltip">
+          {soundEnabled ? 'Sound On' : 'Sound Off'}
+        </span>
+      )}
     </button>
   );
 };

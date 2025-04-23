@@ -24,66 +24,28 @@ const GameScreen = ({
     anime({
       targets: gameContainerRef.current,
       opacity: [0, 1],
-      translateY: [50, 0], // Increased from 30 to 50 for more noticeable effect
-      duration: 1000,
+      translateY: [30, 0],
+      duration: 800,
       easing: 'easeOutQuad'
     });
     
     anime({
       targets: cardRef.current,
-      scale: [0.8, 1],
+      scale: [0.9, 1],
       opacity: [0, 1],
-      delay: 500,
-      duration: 1000,
+      delay: 300,
+      duration: 800,
       easing: 'easeOutElastic(1.2, 0.8)'
     });
     
     anime({
       targets: [noButtonRef.current, yesButtonRef.current],
       opacity: [0, 1],
-      translateY: [30, 0], // Increased from 20 to 30
-      delay: anime.stagger(150, {start: 1000}),
-      duration: 800,
+      translateY: [20, 0],
+      delay: anime.stagger(150, {start: 600}),
+      duration: 600,
       easing: 'easeOutQuad'
     });
-  }, []);
-  
-  // Setup button hover animations
-  useEffect(() => {
-    const setupButtonAnimation = (buttonRef, scale, color) => {
-      const hoverAnimation = anime({
-        targets: buttonRef.current,
-        scale: scale,
-        backgroundColor: color,
-        color: '#ffffff',
-        duration: 300,
-        autoplay: false,
-        easing: 'easeOutQuad'
-      });
-      
-      const leaveAnimation = anime({
-        targets: buttonRef.current,
-        scale: 1,
-        backgroundColor: '#ffffff',
-        color: color,
-        duration: 300,
-        autoplay: false,
-        easing: 'easeOutQuad'
-      });
-      
-      const button = buttonRef.current;
-      
-      button.addEventListener('mouseenter', () => hoverAnimation.play());
-      button.addEventListener('mouseleave', () => leaveAnimation.play());
-      
-      return () => {
-        button.removeEventListener('mouseenter', () => hoverAnimation.play());
-        button.removeEventListener('mouseleave', () => leaveAnimation.play());
-      };
-    };
-    
-    setupButtonAnimation(noButtonRef, 1.1, '#ff4d6d');
-    setupButtonAnimation(yesButtonRef, 1.1, '#4ecdc4');
   }, []);
   
   // Handle card swipe animation
@@ -96,11 +58,11 @@ const GameScreen = ({
     
     const swipeAnimation = anime({
       targets: card,
-      translateX: direction === 'left' ? '-200%' : '200%', // Increased from 150% to 200%
-      rotate: direction === 'left' ? '-40deg' : '40deg', // Increased from 30deg to 40deg
+      translateX: direction === 'left' ? '-150%' : '150%',
+      rotate: direction === 'left' ? '-30deg' : '30deg',
       opacity: 0,
-      scale: 0.7,
-      duration: 800,
+      scale: 0.8,
+      duration: 600,
       easing: 'easeOutCubic',
       complete: () => {
         onSelectAnswer(direction);
@@ -119,8 +81,8 @@ const GameScreen = ({
         translateX: [lastSwipeDirection === 'left' ? '100%' : '-100%', 0],
         rotate: [lastSwipeDirection === 'left' ? '30deg' : '-30deg', 0],
         opacity: [0, 1],
-        scale: [0.8, 1],
-        duration: 700,
+        scale: [0.9, 1],
+        duration: 600,
         easing: 'easeOutCubic'
       });
     }
@@ -155,6 +117,7 @@ const GameScreen = ({
           aria-label="Choose first option"
         >
           <i className="fas fa-arrow-left"></i>
+          <span className="button-tooltip">First Option</span>
         </button>
         
         <button 
@@ -164,6 +127,7 @@ const GameScreen = ({
           aria-label="Choose second option"
         >
           <i className="fas fa-arrow-right"></i>
+          <span className="button-tooltip">Second Option</span>
         </button>
       </div>
     </div>

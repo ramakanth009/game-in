@@ -7,11 +7,13 @@
   margin: 0 auto;
   position: relative;
   z-index: 10;
+  padding: 0 15px;
 }
 
 .results-header {
   text-align: center;
   margin-bottom: 25px;
+  width: 100%;
 }
 
 .results-title {
@@ -21,6 +23,7 @@
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-weight: 700;
 }
 
 .results-subtitle {
@@ -36,6 +39,7 @@
   align-items: center;
   height: 150px;
   margin: 30px 0;
+  width: 100%;
 }
 
 .loading-dot {
@@ -92,7 +96,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  padding-bottom: 20px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #eee;
 }
 
@@ -115,6 +119,7 @@
   font-size: 1.5rem;
   margin-bottom: 5px;
   color: var(--text-color);
+  font-weight: 700;
 }
 
 .profile-title p {
@@ -123,13 +128,48 @@
   font-style: italic;
 }
 
-/* 3D Model container */
-.model-container {
-  width: 100%;
-  height: 200px;
+/* Match indicator */
+.match-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 20px;
-  border-radius: 10px;
-  overflow: hidden;
+}
+
+.match-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.match-circle::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.match-value {
+  position: relative;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+  z-index: 2;
+}
+
+.match-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 5px;
 }
 
 .profile-description {
@@ -184,6 +224,7 @@
   align-items: center;
   gap: 10px;
   color: var(--text-color);
+  font-weight: 600;
 }
 
 .details-title i {
@@ -295,6 +336,7 @@
   margin-bottom: 5px;
   white-space: nowrap;
   animation: fadeIn 0.3s forwards;
+  z-index: 5;
 }
 
 .share-tooltip::after {
@@ -317,11 +359,24 @@
   height: 100%;
   pointer-events: none;
   z-index: 1;
+  overflow: hidden;
 }
 
 .confetti {
   position: absolute;
   z-index: 1;
+  pointer-events: none;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
 }
 
 /* Media Queries */
@@ -342,10 +397,6 @@
   
   .profile-title h3 {
     font-size: 1.3rem;
-  }
-  
-  .model-container {
-    height: 180px;
   }
   
   .profile-stats {
@@ -387,8 +438,13 @@
     margin-bottom: 20px;
   }
   
-  .model-container {
-    height: 150px;
+  .match-circle {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .match-value {
+    font-size: 1.1rem;
   }
   
   .details-title {

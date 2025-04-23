@@ -9,7 +9,7 @@ const Card = forwardRef(({ question, onSwipe }, ref) => {
   const [dragOffset, setDragOffset] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   
-  // Handle touch events for swiping
+  // Handle touch events for swiping with improved sensitivity
   const handleTouchStart = (e) => {
     setTouchStartX(e.touches[0].clientX);
     setIsDragging(true);
@@ -22,12 +22,15 @@ const Card = forwardRef(({ question, onSwipe }, ref) => {
     const offset = currentX - touchStartX;
     setDragOffset(offset);
     
-    // Rotate card slightly while dragging
-    const rotation = offset / 20; // Adjust rotation sensitivity
-    const opacity = 1 - Math.min(Math.abs(offset) / 400, 0.5);
+    // Apply resistance to dragging for more natural feel
+    const resistedOffset = Math.sign(offset) * Math.min(Math.abs(offset), 300);
+    
+    // Rotate card slightly while dragging with smooth animation
+    const rotation = resistedOffset / 20;
+    const opacity = 1 - Math.min(Math.abs(resistedOffset) / 500, 0.3);
     
     anime.set(ref.current, {
-      translateX: offset,
+      translateX: resistedOffset,
       rotate: rotation + 'deg',
       opacity: opacity
     });
@@ -40,19 +43,33 @@ const Card = forwardRef(({ question, onSwipe }, ref) => {
     setIsDragging(false);
     setTouchEndX(dragOffset + touchStartX);
     
-    // If swipe distance is significant, trigger the swipe action
-    const threshold = 100;
+    // More forgiving threshold for mobile
+    const threshold = window.innerWidth < 768 ? 80 : 100;
+    
     if (Math.abs(dragOffset) > threshold) {
-      onSwipe(dragOffset > 0 ? 'right' : 'left');
+      // Add a small delay for visual feedback before completing the swipe
+      setTimeout(() => {
+        onSwipe(dragOffset > 0 ? 'right' : 'left');
+      }, 150);
+      
+      // Animate the card off-screen in the direction of the swipe
+      anime({
+        targets: ref.current,
+        translateX: dragOffset > 0 ? window.innerWidth : -window.innerWidth,
+        rotate: dragOffset > 0 ? '40deg' : '-40deg',
+        opacity: 0,
+        duration: 600,
+        easing: 'easeOutQuint'
+      });
     } else {
-      // Reset card position if swipe was not significant
+      // Reset card position with bouncy animation if swipe was not significant
       anime({
         targets: ref.current,
         translateX: 0,
         rotate: 0,
         opacity: 1,
-        duration: 400,
-        easing: 'easeOutElastic(1, .6)'
+        duration: 600,
+        easing: 'easeOutElastic(1, .5)'
       });
       setSelectedOption(null);
     }
@@ -60,11 +77,16 @@ const Card = forwardRef(({ question, onSwipe }, ref) => {
     setDragOffset(0);
   };
   
-  // Mouse events for desktop
+  // Mouse events for desktop with improved handling
   const handleMouseDown = (e) => {
     setTouchStartX(e.clientX);
     setIsDragging(true);
     e.preventDefault();
+    
+    // Add grabbing cursor to indicate dragging
+    if (ref.current) {
+      ref.current.style.cursor = 'grabbing';
+    }
   };
   
   const handleMouseMove = (e) => {
@@ -74,12 +96,15 @@ const Card = forwardRef(({ question, onSwipe }, ref) => {
     const offset = currentX - touchStartX;
     setDragOffset(offset);
     
+    // Apply resistance to dragging
+    const resistedOffset = Math.sign(offset) * Math.min(Math.abs(offset), 300);
+    
     // Rotate card slightly while dragging
-    const rotation = offset / 20;
-    const opacity = 1 - Math.min(Math.abs(offset) / 400, 0.5);
+    const rotation = resistedOffset / 20;
+    const opacity = 1 - Math.min(Math.abs(resistedOffset) / 500, 0.3);
     
     anime.set(ref.current, {
-      translateX: offset,
+      translateX: resistedOffset,
       rotate: rotation + 'deg',
       opacity: opacity
     });
@@ -93,19 +118,38 @@ const Card = forwardRef(({ question, onSwipe }, ref) => {
     
     setIsDragging(false);
     
+    // Reset cursor
+    if (ref.current) {
+      ref.current.style.cursor = 'grab';
+    }
+    
     // If swipe distance is significant, trigger the swipe action
     const threshold = 100;
+    
     if (Math.abs(dragOffset) > threshold) {
-      onSwipe(dragOffset > 0 ? 'right' : 'left');
+      // Add a small delay for visual feedback
+      setTimeout(() => {
+        onSwipe(dragOffset > 0 ? 'right' : 'left');
+      }, 150);
+      
+      // Animate the card off-screen
+      anime({
+        targets: ref.current,
+        translateX: dragOffset > 0 ? window.innerWidth : -window.innerWidth,
+        rotate: dragOffset > 0 ? '40deg' : '-40deg',
+        opacity: 0,
+        duration: 600,
+        easing: 'easeOutQuint'
+      });
     } else {
-      // Reset card position if swipe was not significant
+      // Reset card position with bouncy animation
       anime({
         targets: ref.current,
         translateX: 0,
         rotate: 0,
         opacity: 1,
-        duration: 400,
-        easing: 'easeOutElastic(1, .6)'
+        duration: 600,
+        easing: 'easeOutElastic(1, .5)'
       });
       setSelectedOption(null);
     }
@@ -115,8 +159,10 @@ const Card = forwardRef(({ question, onSwipe }, ref) => {
   
   // Add and remove global mouse events
   useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
     
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
@@ -124,7 +170,7 @@ const Card = forwardRef(({ question, onSwipe }, ref) => {
     };
   }, [isDragging, touchStartX]);
   
-  // Option click handlers
+  // Option click handlers with improved animation
   const handleOptionClick = (option) => {
     setSelectedOption(option);
     
@@ -136,10 +182,20 @@ const Card = forwardRef(({ question, onSwipe }, ref) => {
       duration: 300,
       easing: 'easeOutQuad',
       complete: () => {
-        // Trigger swipe after brief delay
+        // Trigger swipe after brief delay for better visual feedback
         setTimeout(() => {
           onSwipe(option === 'option1' ? 'left' : 'right');
         }, 100);
+        
+        // Animate the card off-screen
+        anime({
+          targets: ref.current,
+          translateX: option === 'option1' ? -window.innerWidth : window.innerWidth,
+          rotate: option === 'option1' ? '-40deg' : '40deg',
+          opacity: 0,
+          duration: 600,
+          easing: 'easeOutQuint'
+        });
       }
     });
   };

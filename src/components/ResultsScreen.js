@@ -15,15 +15,15 @@ const ResultsScreen = ({ result, onRestart }) => {
   const buttonsRef = useRef(null);
 
   useEffect(() => {
-    // Show loader, then results
-    setTimeout(() => {
+    // Show loader, then results with appropriate timing
+    const timer = setTimeout(() => {
       setIsResultsVisible(true);
       createConfetti();
       
-      // Play entrance animations
+      // Play entrance animations with staggered timing
       const timeline = anime.timeline({
         easing: 'easeOutExpo',
-        duration: 800
+        duration: 600
       });
       
       timeline.add({
@@ -36,29 +36,31 @@ const ResultsScreen = ({ result, onRestart }) => {
         targets: statsRef.current,
         opacity: [0, 1],
         translateY: [20, 0]
-      }, '-=600');
+      }, '-=400');
       
       timeline.add({
         targets: skillsRef.current,
         opacity: [0, 1],
         translateY: [20, 0]
-      }, '-=600');
+      }, '-=400');
       
       timeline.add({
         targets: careersRef.current,
         opacity: [0, 1],
         translateY: [20, 0]
-      }, '-=600');
+      }, '-=400');
       
       timeline.add({
         targets: buttonsRef.current,
         opacity: [0, 1],
         translateY: [20, 0]
-      }, '-=600');
-    }, 2000);
+      }, '-=400');
+    }, 1500); // Reduced from 2000ms for better UX
+    
+    return () => clearTimeout(timer);
   }, []);
 
-  // Create confetti animation
+  // Create confetti animation for celebration effect
   const createConfetti = () => {
     const confettiContainer = document.createElement('div');
     confettiContainer.className = 'confetti-container';
@@ -80,12 +82,23 @@ const ResultsScreen = ({ result, onRestart }) => {
       
       confettiContainer.appendChild(confetti);
       
-      // Animate confetti
+      // Animate confetti with varying duration and delay
       const duration = Math.random() * 3 + 2;
       const delay = Math.random() * 2;
       
-      confetti.style.animation = `fall ${duration}s ease-in-out ${delay}s forwards`;
+      // Add custom animation using anime.js
+      anime({
+        targets: confetti,
+        translateY: [0, window.innerHeight + 100],
+        translateX: [0, (Math.random() - 0.5) * 200],
+        rotate: [0, Math.random() * 360 * (Math.random() > 0.5 ? 1 : -1)],
+        opacity: [1, 0],
+        duration: duration * 1000,
+        delay: delay * 1000,
+        easing: 'easeOutQuad'
+      });
       
+      // Remove confetti after animation completes
       setTimeout(() => {
         confetti.remove();
       }, (duration + delay) * 1000);
@@ -97,7 +110,7 @@ const ResultsScreen = ({ result, onRestart }) => {
     }, 8000);
   };
 
-  // Handle share result
+  // Handle share result with better error handling
   const handleShare = () => {
     try {
       const shareText = `I discovered my ideal tech career path: ${result.data.name}! Find yours with the Tech Career Path Finder!`;
@@ -107,17 +120,50 @@ const ResultsScreen = ({ result, onRestart }) => {
           title: 'My Tech Career Path',
           text: shareText,
           url: window.location.href
+        }).catch(err => {
+          // Fallback to clipboard if share fails
+          copyToClipboard(shareText);
         });
       } else {
         // Fallback to clipboard
-        navigator.clipboard.writeText(shareText)
-          .then(() => {
-            setShowShareTooltip(true);
-            setTimeout(() => setShowShareTooltip(false), 2000);
-          });
+        copyToClipboard(shareText);
       }
     } catch (error) {
       console.error('Error sharing:', error);
+      // Ultimate fallback - just show tooltip
+      setShowShareTooltip(true);
+      setTimeout(() => setShowShareTooltip(false), 2000);
+    }
+  };
+  
+  // Helper function to copy text to clipboard
+  const copyToClipboard = (text) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          setShowShareTooltip(true);
+          setTimeout(() => setShowShareTooltip(false), 2000);
+        })
+        .catch(err => {
+          console.error('Failed to copy: ', err);
+        });
+    } else {
+      // Older browsers fallback
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        setShowShareTooltip(true);
+        setTimeout(() => setShowShareTooltip(false), 2000);
+      } catch (err) {
+        console.error('Fallback: Could not copy text: ', err);
+      }
+      
+      document.body.removeChild(textArea);
     }
   };
 
@@ -125,14 +171,14 @@ const ResultsScreen = ({ result, onRestart }) => {
   const getProfileEmojiBackground = () => {
     const path = result.path;
     const colors = {
-      fullstack: 'rgba(99, 102, 241, 0.1)',
-      datascience: 'rgba(139, 92, 246, 0.1)',
-      marketing: 'rgba(236, 72, 153, 0.1)',
-      cybersecurity: 'rgba(16, 185, 129, 0.1)',
-      uxui: 'rgba(245, 158, 11, 0.1)'
+      fullstack: 'rgba(99, 102, 241, 0.15)',
+      datascience: 'rgba(139, 92, 246, 0.15)',
+      marketing: 'rgba(236, 72, 153, 0.15)',
+      cybersecurity: 'rgba(16, 185, 129, 0.15)',
+      uxui: 'rgba(245, 158, 11, 0.15)'
     };
     
-    return colors[path] || 'rgba(99, 102, 241, 0.1)';
+    return colors[path] || 'rgba(99, 102, 241, 0.15)';
   };
 
   // Get color for profile details based on career path
@@ -165,7 +211,7 @@ const ResultsScreen = ({ result, onRestart }) => {
   }
 
   // Destructure result data for easier access
-  const { data, normalizedTraits } = result;
+  const { data, normalizedTraits, matchScore } = result;
 
   return (
     <div className="results-screen">
@@ -194,6 +240,15 @@ const ResultsScreen = ({ result, onRestart }) => {
               <h3>{data.name}</h3>
               <p>{data.tagline}</p>
             </div>
+          </div>
+          
+          <div className="match-indicator">
+            <div className="match-circle" style={{ 
+              background: `conic-gradient(${data.color} ${matchScore}%, #e9ecef ${matchScore}%)` 
+            }}>
+              <div className="match-value">{matchScore}%</div>
+            </div>
+            <div className="match-label">Match Score</div>
           </div>
           
           <p className="profile-description">

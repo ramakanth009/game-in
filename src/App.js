@@ -5,6 +5,7 @@ import GameScreen from './components/GameScreen';
 import ResultsScreen from './components/ResultsScreen';
 import AnimatedBackground from './components/AnimatedBackground';
 import SoundToggle from './components/SoundToggle';
+import './App.css';
 
 const App = () => {
   // Game states
@@ -30,7 +31,7 @@ const App = () => {
     
     // Play start sound if enabled
     if (soundEnabled) {
-      playSound('/sounds/game-start.mp3');
+      playSound('start');
     }
   };
 
@@ -52,7 +53,7 @@ const App = () => {
     
     // Play swipe sound
     if (soundEnabled) {
-      playSound('/sounds/swipe.mp3');
+      playSound('swipe');
     }
     
     // Move to next question or finish
@@ -63,10 +64,10 @@ const App = () => {
     }
   };
 
-  // Play sound helper function
-  const playSound = (src) => {
-    const sound = new Audio(src);
-    sound.play().catch(e => console.log('Audio play prevented:', e));
+  // Play sound helper function (simplified for demo)
+  const playSound = (soundType) => {
+    // This would connect to actual sound files in a real implementation
+    console.log(`Playing ${soundType} sound`);
   };
 
   // Calculate result and finish game
@@ -78,7 +79,7 @@ const App = () => {
     
     // Play results sound
     if (soundEnabled) {
-      playSound('/sounds/result.mp3');
+      playSound('result');
     }
   };
 
@@ -132,7 +133,8 @@ const App = () => {
     return {
       path: bestMatch,
       data: careerPaths[bestMatch],
-      normalizedTraits: normalizedTraits
+      normalizedTraits: normalizedTraits,
+      matchScore: highestScore.toFixed(0)
     };
   };
 
@@ -147,6 +149,11 @@ const App = () => {
     });
     setCareerResult(null);
     setGameFinished(false);
+    
+    // Play restart sound
+    if (soundEnabled) {
+      playSound('restart');
+    }
   };
 
   // Toggle sound
@@ -163,22 +170,24 @@ const App = () => {
         toggleSound={toggleSound} 
       />
       
-      {!gameStarted ? (
-        <WelcomeScreen onStartGame={handleStartGame} />
-      ) : !gameFinished ? (
-        <GameScreen 
-          currentQuestionIndex={currentQuestionIndex}
-          totalQuestions={questions.length}
-          question={questions[currentQuestionIndex]}
-          userTraits={userTraits}
-          onSelectAnswer={handleSelectAnswer}
-        />
-      ) : (
-        <ResultsScreen 
-          result={careerResult} 
-          onRestart={handleRestartGame} 
-        />
-      )}
+      <div className="content-wrapper">
+        {!gameStarted ? (
+          <WelcomeScreen onStartGame={handleStartGame} />
+        ) : !gameFinished ? (
+          <GameScreen 
+            currentQuestionIndex={currentQuestionIndex}
+            totalQuestions={questions.length}
+            question={questions[currentQuestionIndex]}
+            userTraits={userTraits}
+            onSelectAnswer={handleSelectAnswer}
+          />
+        ) : (
+          <ResultsScreen 
+            result={careerResult} 
+            onRestart={handleRestartGame} 
+          />
+        )}
+      </div>
     </div>
   );
 };

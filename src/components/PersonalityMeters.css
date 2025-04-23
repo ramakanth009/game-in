@@ -3,7 +3,8 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  max-width: 500px;
 }
 
 .personality-meter {
@@ -22,38 +23,41 @@
 .meter-value {
   font-weight: 600;
   transition: opacity 0.3s ease;
+  min-width: 30px;
+  text-align: right;
 }
 
 .meter-bar {
-  height: 6px;
+  height: 8px;
   background-color: #e5e7eb;
-  border-radius: 3px;
+  border-radius: 4px;
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .meter-progress {
   height: 100%;
   width: 0;
-  border-radius: 3px;
+  border-radius: 4px;
   position: relative;
   overflow: hidden;
 }
 
 .creative-progress {
-  background-color: var(--uxui-color);
+  background: linear-gradient(90deg, #f59e0b, #ec4899);
 }
 
 .analytical-progress {
-  background-color: var(--datascience-color);
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
 }
 
 .social-progress {
-  background-color: var(--marketing-color);
+  background: linear-gradient(90deg, #ec4899, #ef4444);
 }
 
 .technical-progress {
-  background-color: var(--cybersecurity-color);
+  background: linear-gradient(90deg, #10b981, #3b82f6);
 }
 
 .meter-progress::after {
@@ -73,6 +77,51 @@
   animation: shimmer 2s infinite;
 }
 
+/* Add a tooltip showing trait description on hover */
+.personality-meter {
+  position: relative;
+}
+
+.personality-meter::after {
+  content: attr(data-description);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.personality-meter:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.meter-creative::after {
+  content: "Innovative thinking & design skills";
+}
+
+.meter-analytical::after {
+  content: "Logical reasoning & data analysis";
+}
+
+.meter-social::after {
+  content: "Communication & people skills";
+}
+
+.meter-technical::after {
+  content: "Technical knowledge & implementation";
+}
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);
@@ -90,6 +139,10 @@
   }
   
   .meter-bar {
-    height: 5px;
+    height: 6px;
+  }
+  
+  .personality-meter::after {
+    display: none; /* Hide tooltips on small screens */
   }
 }
