@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { questions, careerPaths } from './data/gameData';
 import WelcomeScreen from './components/WelcomeScreen';
 import GameScreen from './components/GameScreen';
 import ResultsScreen from './components/ResultsScreen';
 import AnimatedBackground from './components/AnimatedBackground';
 import SoundToggle from './components/SoundToggle';
-import { questions, careerPaths } from './data/gameData';
-import './App.css';
 
-function App() {
+const App = () => {
   // Game states
   const [gameStarted, setGameStarted] = useState(false);
   const [gameFinished, setGameFinished] = useState(false);
@@ -31,8 +30,7 @@ function App() {
     
     // Play start sound if enabled
     if (soundEnabled) {
-      const startSound = new Audio('/sounds/game-start.mp3');
-      startSound.play().catch(e => console.log('Audio play prevented:', e));
+      playSound('/sounds/game-start.mp3');
     }
   };
 
@@ -54,8 +52,7 @@ function App() {
     
     // Play swipe sound
     if (soundEnabled) {
-      const swipeSound = new Audio('/sounds/swipe.mp3');
-      swipeSound.play().catch(e => console.log('Audio play prevented:', e));
+      playSound('/sounds/swipe.mp3');
     }
     
     // Move to next question or finish
@@ -64,6 +61,12 @@ function App() {
     } else {
       finishGame();
     }
+  };
+
+  // Play sound helper function
+  const playSound = (src) => {
+    const sound = new Audio(src);
+    sound.play().catch(e => console.log('Audio play prevented:', e));
   };
 
   // Calculate result and finish game
@@ -75,8 +78,7 @@ function App() {
     
     // Play results sound
     if (soundEnabled) {
-      const resultSound = new Audio('/sounds/result.mp3');
-      resultSound.play().catch(e => console.log('Audio play prevented:', e));
+      playSound('/sounds/result.mp3');
     }
   };
 
@@ -179,6 +181,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;

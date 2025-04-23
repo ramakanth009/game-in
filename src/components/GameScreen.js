@@ -13,39 +13,38 @@ const GameScreen = ({
   onSelectAnswer 
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
+  const [lastSwipeDirection, setLastSwipeDirection] = useState(null);
   const gameContainerRef = useRef(null);
   const cardRef = useRef(null);
   const noButtonRef = useRef(null);
   const yesButtonRef = useRef(null);
   
   useEffect(() => {
-    // Entry animation for the game container
+    // Update the entry animation values
     anime({
       targets: gameContainerRef.current,
       opacity: [0, 1],
-      translateY: [30, 0],
-      duration: 800,
-      easing: 'easeOutExpo'
+      translateY: [50, 0], // Increased from 30 to 50 for more noticeable effect
+      duration: 1000,
+      easing: 'easeOutQuad'
     });
     
-    // Entry animation for the card
     anime({
       targets: cardRef.current,
-      scale: [0.9, 1],
+      scale: [0.8, 1],
       opacity: [0, 1],
-      delay: 400,
-      duration: 800,
-      easing: 'easeOutElastic(1, .8)'
+      delay: 500,
+      duration: 1000,
+      easing: 'easeOutElastic(1.2, 0.8)'
     });
     
-    // Animation for the control buttons
     anime({
       targets: [noButtonRef.current, yesButtonRef.current],
       opacity: [0, 1],
-      translateY: [20, 0],
-      delay: anime.stagger(100, {start: 800}),
-      duration: 600,
-      easing: 'easeOutExpo'
+      translateY: [30, 0], // Increased from 20 to 30
+      delay: anime.stagger(150, {start: 1000}),
+      duration: 800,
+      easing: 'easeOutQuad'
     });
   }, []);
   
@@ -91,16 +90,17 @@ const GameScreen = ({
   const handleSwipe = (direction) => {
     if (isAnimating) return;
     setIsAnimating(true);
+    setLastSwipeDirection(direction);
     
     const card = cardRef.current;
     
     const swipeAnimation = anime({
       targets: card,
-      translateX: direction === 'left' ? '-150%' : '150%',
-      rotate: direction === 'left' ? '-30deg' : '30deg',
+      translateX: direction === 'left' ? '-200%' : '200%', // Increased from 150% to 200%
+      rotate: direction === 'left' ? '-40deg' : '40deg', // Increased from 30deg to 40deg
       opacity: 0,
-      scale: 0.8,
-      duration: 700,
+      scale: 0.7,
+      duration: 800,
       easing: 'easeOutCubic',
       complete: () => {
         onSelectAnswer(direction);
@@ -113,18 +113,18 @@ const GameScreen = ({
   
   // Handle new card entry animation when question changes
   useEffect(() => {
-    if (cardRef.current) {
+    if (cardRef.current && lastSwipeDirection) {
       anime({
         targets: cardRef.current,
-        translateX: [direction === 'left' ? '100%' : '-100%', 0],
-        rotate: [direction === 'left' ? '30deg' : '-30deg', 0],
+        translateX: [lastSwipeDirection === 'left' ? '100%' : '-100%', 0],
+        rotate: [lastSwipeDirection === 'left' ? '30deg' : '-30deg', 0],
         opacity: [0, 1],
         scale: [0.8, 1],
         duration: 700,
         easing: 'easeOutCubic'
       });
     }
-  }, [currentQuestionIndex]);
+  }, [currentQuestionIndex, lastSwipeDirection]);
 
   return (
     <div className="game-screen" ref={gameContainerRef}>
