@@ -10,17 +10,32 @@ const GameScreen = ({
   totalQuestions, 
   question, 
   userTraits, 
-  onSelectAnswer 
+  onSelectAnswer,
+  isTransitioning
 }) => {
-  const [isAnimating, setIsAnimating] = useState(false);
   const [lastSwipeDirection, setLastSwipeDirection] = useState(null);
+  const [previousQuestion, setPreviousQuestion] = useState(null);
+  const [previousIndex, setPreviousIndex] = useState(null);
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  
   const gameContainerRef = useRef(null);
   const cardRef = useRef(null);
   const noButtonRef = useRef(null);
   const yesButtonRef = useRef(null);
+  const cardContainerRef = useRef(null);
   
+  // Track previous question for determining animation direction
   useEffect(() => {
-    // Update the entry animation values
+    if (!isFirstRender) {
+      setPreviousQuestion(question);
+      setPreviousIndex(currentQuestionIndex);
+    } else {
+      setIsFirstRender(false);
+    }
+  }, [question, currentQuestionIndex]);
+  
+  // Initial entry animation - only runs once
+  useEffect(() => {
     anime({
       targets: gameContainerRef.current,
       opacity: [0, 1],
@@ -48,45 +63,47 @@ const GameScreen = ({
     });
   }, []);
   
-  // Handle card swipe animation
-  const handleSwipe = (direction) => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setLastSwipeDirection(direction);
-    
-    const card = cardRef.current;
-    
-    const swipeAnimation = anime({
-      targets: card,
-      translateX: direction === 'left' ? '-150%' : '150%',
-      rotate: direction === 'left' ? '-30deg' : '30deg',
-      opacity: 0,
-      scale: 0.8,
-      duration: 600,
-      easing: 'easeOutCubic',
-      complete: () => {
-        onSelectAnswer(direction);
-        setIsAnimating(false);
-      }
-    });
-    
-    swipeAnimation.play();
-  };
-  
   // Handle new card entry animation when question changes
   useEffect(() => {
-    if (cardRef.current && lastSwipeDirection) {
+    if (cardRef.current && !isFirstRender && previousQuestion !== question) {
+      // Determine if we're moving forward or backward
+      const isMovingForward = previousIndex !== null && currentQuestionIndex > previousIndex;
+      
+      // Set the initial position for the new card based on the direction
+      const initialPosition = isMovingForward ? '100%' : '-100%';
+      const initialRotation = isMovingForward ? '10deg' : '-10deg';
+      
+      // Set initial state for the new card (off-screen)
+      anime.set(cardRef.current, {
+        translateX: initialPosition,
+        rotate: initialRotation,
+        opacity: 0,
+        scale: 0.95
+      });
+      
+      // Animate the new card into position with a smooth entrance
       anime({
         targets: cardRef.current,
-        translateX: [lastSwipeDirection === 'left' ? '100%' : '-100%', 0],
-        rotate: [lastSwipeDirection === 'left' ? '30deg' : '-30deg', 0],
-        opacity: [0, 1],
-        scale: [0.9, 1],
-        duration: 600,
-        easing: 'easeOutCubic'
+        translateX: 0,
+        rotate: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 500,
+        easing: 'easeOutCubic',
+        delay: 50 // Brief delay for sequential animation
       });
     }
-  }, [currentQuestionIndex, lastSwipeDirection]);
+  }, [question, previousQuestion, currentQuestionIndex, previousIndex, isFirstRender]);
+  
+  // Handle card swipe animation
+  const handleSwipe = (direction) => {
+    if (isTransitioning) return;
+    
+    setLastSwipeDirection(direction);
+    
+    // Trigger the parent component's handler
+    onSelectAnswer(direction);
+  };
 
   return (
     <div className="game-screen" ref={gameContainerRef}>
@@ -101,11 +118,12 @@ const GameScreen = ({
         <PersonalityMeters traits={userTraits} />
       </div>
       
-      <div className="game-container">
+      <div className="game-container" ref={cardContainerRef}>
         <Card 
           ref={cardRef}
           question={question} 
           onSwipe={handleSwipe}
+          isTransitioning={isTransitioning}
         />
       </div>
       
@@ -115,6 +133,7 @@ const GameScreen = ({
           ref={noButtonRef}
           onClick={() => handleSwipe('left')}
           aria-label="Choose first option"
+          disabled={isTransitioning}
         >
           <i className="fas fa-arrow-left"></i>
           <span className="button-tooltip">First Option</span>
@@ -125,6 +144,7 @@ const GameScreen = ({
           ref={yesButtonRef}
           onClick={() => handleSwipe('right')}
           aria-label="Choose second option"
+          disabled={isTransitioning}
         >
           <i className="fas fa-arrow-right"></i>
           <span className="button-tooltip">Second Option</span>

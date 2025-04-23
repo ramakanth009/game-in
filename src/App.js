@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { questions, careerPaths } from './data/gameData';
 import WelcomeScreen from './components/WelcomeScreen';
 import GameScreen from './components/GameScreen';
@@ -13,6 +13,13 @@ const App = () => {
   const [gameFinished, setGameFinished] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Reference to audio elements for smoother sound playback
+  const swipeSoundRef = useRef(null);
+  const startSoundRef = useRef(null);
+  const resultSoundRef = useRef(null);
+  const restartSoundRef = useRef(null);
   
   // User traits tracking
   const [userTraits, setUserTraits] = useState({
@@ -25,6 +32,15 @@ const App = () => {
   // Career result
   const [careerResult, setCareerResult] = useState(null);
 
+  // Initialize audio elements
+  useEffect(() => {
+    // In a real implementation, these would be actual sound files
+    swipeSoundRef.current = new Audio();
+    startSoundRef.current = new Audio();
+    resultSoundRef.current = new Audio();
+    restartSoundRef.current = new Audio();
+  }, []);
+
   // Handle start game
   const handleStartGame = () => {
     setGameStarted(true);
@@ -35,8 +51,13 @@ const App = () => {
     }
   };
 
-  // Handle answer selection
+  // Handle answer selection with smoother transition
   const handleSelectAnswer = (option) => {
+    // Prevent multiple selections during transition
+    if (isTransitioning) return;
+    
+    setIsTransitioning(true);
+    
     const question = questions[currentQuestionIndex];
     const traits = option === 'left' ? question.traits.option1 : question.traits.option2;
     
@@ -56,18 +77,53 @@ const App = () => {
       playSound('swipe');
     }
     
-    // Move to next question or finish
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-    } else {
-      finishGame();
-    }
+    // Use a timeout to delay the question change for smoother transitions
+    setTimeout(() => {
+      // Move to next question or finish
+      if (currentQuestionIndex < questions.length - 1) {
+        setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+      } else {
+        finishGame();
+      }
+      
+      // Reset transition state after animation completes
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 300);
+    }, 400); // Timed to match card exit animation duration
   };
 
-  // Play sound helper function (simplified for demo)
+  // Play sound helper function (improved for better performance)
   const playSound = (soundType) => {
-    // This would connect to actual sound files in a real implementation
+    if (!soundEnabled) return;
+    
+    let soundRef;
+    switch (soundType) {
+      case 'start':
+        soundRef = startSoundRef.current;
+        break;
+      case 'swipe':
+        soundRef = swipeSoundRef.current;
+        break;
+      case 'result':
+        soundRef = resultSoundRef.current;
+        break;
+      case 'restart':
+        soundRef = restartSoundRef.current;
+        break;
+      default:
+        return;
+    }
+    
+    // In a real implementation, this would play actual sounds
+    // For now, just log the sound type
     console.log(`Playing ${soundType} sound`);
+    
+    // If this were real audio:
+    // if (soundRef) {
+    //   soundRef.currentTime = 0;
+    //   soundRef.play().catch(e => console.log("Audio play error:", e));
+    // }
   };
 
   // Calculate result and finish game
@@ -134,26 +190,33 @@ const App = () => {
       path: bestMatch,
       data: careerPaths[bestMatch],
       normalizedTraits: normalizedTraits,
-      matchScore: highestScore.toFixed(0)
+      matchScore: Math.round(highestScore)
     };
   };
 
-  // Restart game
+  // Restart game with smoother transition
   const handleRestartGame = () => {
-    setCurrentQuestionIndex(0);
-    setUserTraits({
-      creative: 0,
-      analytical: 0,
-      social: 0,
-      technical: 0
-    });
-    setCareerResult(null);
-    setGameFinished(false);
-    
-    // Play restart sound
+    // Play restart sound first for immediate feedback
     if (soundEnabled) {
       playSound('restart');
     }
+    
+    // Use state transition flag to prevent action during animation
+    setIsTransitioning(true);
+    
+    // Reset all game state with delayed timing for visual effect
+    setTimeout(() => {
+      setCurrentQuestionIndex(0);
+      setUserTraits({
+        creative: 0,
+        analytical: 0,
+        social: 0,
+        technical: 0
+      });
+      setCareerResult(null);
+      setGameFinished(false);
+      setIsTransitioning(false);
+    }, 300);
   };
 
   // Toggle sound
@@ -180,6 +243,7 @@ const App = () => {
             question={questions[currentQuestionIndex]}
             userTraits={userTraits}
             onSelectAnswer={handleSelectAnswer}
+            isTransitioning={isTransitioning}
           />
         ) : (
           <ResultsScreen 

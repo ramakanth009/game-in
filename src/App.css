@@ -1,15 +1,18 @@
 :root {
-  --primary-color: #6366f1;
-  --secondary-color: #4ecdc4;
-  --background-color: #f8f9fa;
-  --card-background: white;
-  --text-color: #333;
-  --fullstack-color: #6366f1;
-  --datascience-color: #8b5cf6;
-  --marketing-color: #ec4899;
-  --cybersecurity-color: #10b981;
-  --uxui-color: #f59e0b;
+  --primary-color: #27286c; /* Dark Blue (used in text) */
+  --secondary-color: #60cae6; /* Light Blue (from gradient) */
+  --background-color: #ffffff; /* White (radial base and fills) */
+  --card-background: #ffffff;
+  --text-color: #27286c; /* Align with primary dark text */
+
+  /* Custom category colors based on extracted palette */
+  --fullstack-color: #233f94; /* Medium Blue */
+  --datascience-color: #427bbf; /* Bright Blue */
+  --marketing-color: #ffc615; /* Yellow accent */
+  --cybersecurity-color: #2a2b6a; /* Deep Navy */
+  --uxui-color: #354fa2; /* Darker Blue */
 }
+
 
 * {
   box-sizing: border-box;

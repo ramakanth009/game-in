@@ -7,6 +7,7 @@
   margin: 0 auto;
   min-height: 100vh;
   padding: 20px 10px;
+  will-change: opacity, transform;
 }
 
 .game-header {
@@ -36,6 +37,21 @@
   margin: 1rem 0;
   position: relative;
   height: 450px;
+  overflow: visible;
+  perspective: 1000px; /* 3D perspective for better animations */
+  transform-style: preserve-3d;
+}
+
+/* Create a stacking context for 3D transformations */
+.game-container::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .controls {
@@ -52,13 +68,15 @@
   border-radius: 50%;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1); /* Improved easing */
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   position: relative;
+  will-change: transform, box-shadow; /* Hint for browser to optimize */
+  transform: translate3d(0, 0, 0); /* Force GPU acceleration */
 }
 
 .no-button {
@@ -73,24 +91,30 @@
   border: 2px solid #4ecdc4;
 }
 
-.control-button:hover {
+.control-button:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.no-button:hover {
+.no-button:hover:not(:disabled) {
   background-color: #ff4d6d;
   color: white;
 }
 
-.yes-button:hover {
+.yes-button:hover:not(:disabled) {
   background-color: #4ecdc4;
   color: white;
 }
 
-.control-button:active {
+.control-button:active:not(:disabled) {
   transform: translateY(0);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Disabled state for buttons */
+.control-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Button tooltips */

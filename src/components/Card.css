@@ -1,24 +1,42 @@
+/* 
+ * Enhanced Card Component
+ * Optimized for smooth swiping experience with hardware-accelerated animations
+ */
+
 .card {
   position: absolute;
   width: 100%;
   max-width: 500px;
   background-color: var(--card-background);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   padding: 25px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   user-select: none;
   overflow: hidden;
   z-index: 3;
-  will-change: transform, opacity, box-shadow;
   margin: 0 auto;
   min-height: 450px;
+  
+  /* Critical GPU acceleration properties for smooth animations */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform, opacity;
+  
+  /* Clean up transition for smoother feel */
+  transition: box-shadow 0.3s ease;
 }
 
+/* Card shadow hover effect */
+.card:hover {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Card gradient background */
 .card::before {
   content: '';
   position: absolute;
@@ -72,9 +90,13 @@
   border: 2px solid #eee;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+  
+  /* Smooth and optimized animations */
+  transform: translate3d(0, 0, 0);
+  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  will-change: transform, box-shadow, border-color;
 }
 
 .option::before {
@@ -91,9 +113,10 @@
   pointer-events: none;
 }
 
+/* Highlight effect when option is selected */
 .option.highlighted {
-  transform: scale(1.03);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translate3d(0, -3px, 0) scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   border-color: var(--primary-color);
 }
 
@@ -111,11 +134,13 @@
   font-size: 3.5rem;
   margin-bottom: 15px;
   display: inline-block;
-  transition: transform 0.3s ease;
+  
+  /* More sophisticated animation curve for emoji bounce */
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .option.highlighted .option-emoji {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .option-text {
@@ -178,22 +203,74 @@
   animation: bounceHorizontal 2s infinite;
 }
 
+/* Animation for the swipe hint arrow */
+@keyframes bounceHorizontal {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(7px);
+  }
+}
+
 /* Improve touch target size for mobile */
 .option {
   min-height: 160px;
 }
 
-/* Add a subtle hover effect */
+/* Subtle hover effect with improved transition */
 .option:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translate3d(0, -3px, 0);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
-/* Media Queries */
+/* Special class for when the card is actively being dragged */
+.card.dragging {
+  transition: none !important;
+  cursor: grabbing;
+}
+
+/* Entrance animation for new cards */
+@keyframes cardEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+/* Exit animation for leaving cards */
+@keyframes cardExit {
+  0% {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%) rotate(-10deg);
+  }
+}
+
+/* Apply entrance animation to new cards */
+.card.entering {
+  animation: cardEntrance 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+/* Apply exit animation to leaving cards */
+.card.exiting {
+  animation: cardExit 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+/* Media Queries with improved mobile experience */
 @media (max-width: 768px) {
   .card {
     padding: 20px;
     min-height: 420px;
+    max-width: 90%;
   }
   
   .card-title {
@@ -223,6 +300,8 @@
   .card {
     padding: 15px;
     min-height: 400px;
+    max-width: 95%;
+    border-radius: 16px;
   }
   
   .card-title {
