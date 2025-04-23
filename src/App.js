@@ -4,7 +4,19 @@ import WelcomeScreen from './components/WelcomeScreen';
 import GameScreen from './components/GameScreen';
 import ResultsScreen from './components/ResultsScreen';
 import AnimatedBackground from './components/AnimatedBackground';
+import GigaversityHeader from './components/GigaversityHeader';
 import './App.css';
+
+// Select only 7 most diverse and engaging questions from the 10 available
+const optimizedQuestions = [
+  questions[0], // Building vs Analyzing
+  questions[1], // Visual vs Logical thinking
+  questions[2], // People vs Technology
+  questions[3], // Security vs UX
+  questions[5], // Optimize vs Innovate
+  questions[7], // Puzzles vs Storytelling
+  questions[9]  // Final role question
+];
 
 const App = () => {
   // Game states
@@ -14,7 +26,7 @@ const App = () => {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   
-  // Reference to audio elements for smoother sound playback
+  // Reference to audio elements
   const swipeSoundRef = useRef(null);
   const startSoundRef = useRef(null);
   const resultSoundRef = useRef(null);
@@ -33,11 +45,20 @@ const App = () => {
 
   // Initialize audio elements
   useEffect(() => {
-    // In a real implementation, these would be actual sound files
-    swipeSoundRef.current = new Audio();
-    startSoundRef.current = new Audio();
-    resultSoundRef.current = new Audio();
-    restartSoundRef.current = new Audio();
+    try {
+      swipeSoundRef.current = new Audio('/sounds/swipe.mp3');
+      startSoundRef.current = new Audio('/sounds/start.mp3');
+      resultSoundRef.current = new Audio('/sounds/result.mp3');
+      restartSoundRef.current = new Audio('/sounds/restart.mp3');
+      
+      // Preload audio
+      swipeSoundRef.current.load();
+      startSoundRef.current.load();
+      resultSoundRef.current.load();
+      restartSoundRef.current.load();
+    } catch (error) {
+      console.log('Audio initialization failed:', error);
+    }
   }, []);
 
   // Handle start game
@@ -57,7 +78,7 @@ const App = () => {
     
     setIsTransitioning(true);
     
-    const question = questions[currentQuestionIndex];
+    const question = optimizedQuestions[currentQuestionIndex];
     const traits = option === 'left' ? question.traits.option1 : question.traits.option2;
     
     // Update traits
@@ -79,7 +100,7 @@ const App = () => {
     // Use a timeout to delay the question change for smoother transitions
     setTimeout(() => {
       // Move to next question or finish
-      if (currentQuestionIndex < questions.length - 1) {
+      if (currentQuestionIndex < optimizedQuestions.length - 1) {
         setCurrentQuestionIndex(prevIndex => prevIndex + 1);
       } else {
         finishGame();
@@ -92,7 +113,7 @@ const App = () => {
     }, 400); // Timed to match card exit animation duration
   };
 
-  // Play sound helper function (improved for better performance)
+  // Play sound helper function
   const playSound = (soundType) => {
     if (!soundEnabled) return;
     
@@ -114,15 +135,11 @@ const App = () => {
         return;
     }
     
-    // In a real implementation, this would play actual sounds
-    // For now, just log the sound type
-    console.log(`Playing ${soundType} sound`);
-    
-    // If this were real audio:
-    // if (soundRef) {
-    //   soundRef.currentTime = 0;
-    //   soundRef.play().catch(e => console.log("Audio play error:", e));
-    // }
+    // Play the sound with error handling
+    if (soundRef) {
+      soundRef.currentTime = 0;
+      soundRef.play().catch(e => console.log("Audio play error:", e));
+    }
   };
 
   // Calculate result and finish game
@@ -140,13 +157,19 @@ const App = () => {
 
   // Calculate career result based on traits
   const calculateResult = () => {
-    // Normalize traits to percentages
-    const maxPossibleValue = 100;
+    // Normalize traits to percentages (adjusted for fewer questions)
+    const maxPossibleValues = {
+      creative: 85, // Adjusted max values based on 7 questions
+      analytical: 85,
+      social: 70,
+      technical: 85
+    };
+    
     const normalizedTraits = {
-      creative: Math.min(100, (userTraits.creative / maxPossibleValue) * 100),
-      analytical: Math.min(100, (userTraits.analytical / maxPossibleValue) * 100),
-      social: Math.min(100, (userTraits.social / maxPossibleValue) * 100),
-      technical: Math.min(100, (userTraits.technical / maxPossibleValue) * 100)
+      creative: Math.min(100, (userTraits.creative / maxPossibleValues.creative) * 100),
+      analytical: Math.min(100, (userTraits.analytical / maxPossibleValues.analytical) * 100),
+      social: Math.min(100, (userTraits.social / maxPossibleValues.social) * 100),
+      technical: Math.min(100, (userTraits.technical / maxPossibleValues.technical) * 100)
     };
     
     // Calculate match score for each career path
@@ -224,10 +247,13 @@ const App = () => {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-container gigaversity-theme">
       <AnimatedBackground />
       
-      
+      <GigaversityHeader 
+        soundEnabled={soundEnabled} 
+        toggleSound={toggleSound} 
+      />
       
       <div className="content-wrapper">
         {!gameStarted ? (
@@ -235,8 +261,8 @@ const App = () => {
         ) : !gameFinished ? (
           <GameScreen 
             currentQuestionIndex={currentQuestionIndex}
-            totalQuestions={questions.length}
-            question={questions[currentQuestionIndex]}
+            totalQuestions={optimizedQuestions.length}
+            question={optimizedQuestions[currentQuestionIndex]}
             userTraits={userTraits}
             onSelectAnswer={handleSelectAnswer}
             isTransitioning={isTransitioning}

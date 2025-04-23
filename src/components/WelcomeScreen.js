@@ -9,7 +9,7 @@ const WelcomeScreen = ({ onStartGame }) => {
   const floatingIconsRef = useRef(null);
   
   useEffect(() => {
-    // Entry animation for welcome screen elements
+    // Entry animation for welcome screen elements with improved timing
     const timeline = anime.timeline({
       easing: 'easeOutExpo',
       duration: 800
@@ -37,7 +37,7 @@ const WelcomeScreen = ({ onStartGame }) => {
       scale: [0.9, 1],
     }, '-=300');
     
-    // Animate floating tech icons
+    // Improved floating tech icons animation
     if (floatingIconsRef.current) {
       const icons = floatingIconsRef.current.querySelectorAll('.floating-icon');
       
@@ -58,7 +58,7 @@ const WelcomeScreen = ({ onStartGame }) => {
     const buttonHoverAnimation = anime({
       targets: buttonRef.current,
       scale: 1.05,
-      boxShadow: '0 8px 20px rgba(99, 102, 241, 0.4)',
+      boxShadow: '0 8px 20px rgba(39, 40, 108, 0.4)',
       duration: 300,
       autoplay: false,
       easing: 'easeOutQuad'
@@ -109,12 +109,12 @@ const WelcomeScreen = ({ onStartGame }) => {
       
       <div className="welcome-content">
         <h1 className="welcome-title" ref={titleRef}>
-          Tech Career Path Finder
+          Discover Your Tech Career Path
         </h1>
         
         <p className="welcome-subtitle" ref={subtitleRef}>
-          Discover your ideal tech career path by answering a series of questions. 
-          Swipe or tap to choose between options that match your preferences.
+          Answer a few quick questions to find out which tech career best matches your personality
+          and skills. Swipe or tap to choose between options that reflect your preferences.
         </p>
         
         <button 
@@ -128,21 +128,22 @@ const WelcomeScreen = ({ onStartGame }) => {
         <div className="welcome-instructions">
           <div className="instruction-item">
             <div className="instruction-icon">🔍</div>
-            <div className="instruction-text">Answer 10 questions about your preferences</div>
+            <div className="instruction-text">Answer 7 questions about your work style and preferences</div>
           </div>
           <div className="instruction-item">
             <div className="instruction-icon">👥</div>
-            <div className="instruction-text">Discover your personality traits</div>
+            <div className="instruction-text">Analyze your unique personality traits</div>
           </div>
           <div className="instruction-item">
             <div className="instruction-icon">🚀</div>
-            <div className="instruction-text">Get your ideal tech career match</div>
+            <div className="instruction-text">Get matched with your ideal tech career</div>
           </div>
         </div>
       </div>
       
       <div className="welcome-footer">
-        <p>Find the perfect tech career path for your unique skills and interests</p>
+        <p className="gigaversity-tagline">Helping you find the perfect path in the world of technology</p>
+        <p className="small-text">Takes less than 2 minutes to complete</p>
       </div>
     </div>
   );

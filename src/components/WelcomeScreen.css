@@ -30,7 +30,7 @@
   max-width: 50rem;
   line-height: 1.2;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(135deg, #27286c, #60cae6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -47,19 +47,20 @@
 }
 
 .start-button {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(135deg, #27286c, #60cae6);
   color: #ffffff;
   border: none;
   padding: 0.9375rem 2.5rem;
   font-size: 1.2rem;
   border-radius: 1.875rem;
   cursor: pointer;
-  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.25rem 0.625rem rgba(39, 40, 108, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
   margin: 1rem auto 2rem;
   min-width: 13.75rem;
+  font-weight: 600;
 }
 
 .start-button::before {
@@ -76,14 +77,14 @@
 
 .start-button:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 20px rgba(39, 40, 108, 0.4);
 }
 
 .start-button:hover::before {
   transform: translateX(200%) skewX(-20deg);
 }
 
-/* Welcome instructions */
+/* Welcome instructions with enhanced styling */
 .welcome-instructions {
   display: flex;
   flex-direction: column;
@@ -103,6 +104,8 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: left;
+  border-left: 4px solid;
+  border-image: linear-gradient(to bottom, #27286c, #60cae6) 1;
 }
 
 .instruction-item:hover {
@@ -117,21 +120,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(135deg, rgba(39, 40, 108, 0.1), rgba(96, 202, 230, 0.1));
+  border-radius: 50%;
 }
 
 .instruction-text {
   font-size: 1rem;
   color: var(--text-color);
+  font-weight: 500;
 }
 
 .welcome-footer {
   margin-top: 2rem;
+  color: #666;
+}
+
+.gigaversity-tagline {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #27286c;
+}
+
+.small-text {
+  font-size: 0.8rem;
   color: #888;
-  font-size: 0.9rem;
   font-style: italic;
 }
 
-/* Floating icon animations */
+/* Floating icon animations with enhanced styling */
 .floating-icons {
   position: absolute;
   width: 100%;
@@ -151,31 +168,44 @@
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
   z-index: 1;
   transform-origin: center;
+  background: rgba(255, 255, 255, 0.8);
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .floating-icon.code { 
   color: var(--fullstack-color);
   animation: floating 8s ease-in-out infinite;
+  border: 2px solid rgba(35, 63, 148, 0.2);
 }
 
 .floating-icon.data { 
   color: var(--datascience-color); 
   animation: floating 7s ease-in-out infinite 1s;
+  border: 2px solid rgba(66, 123, 191, 0.2);
 }
 
 .floating-icon.security { 
   color: var(--cybersecurity-color); 
   animation: floating 9s ease-in-out infinite 0.5s;
+  border: 2px solid rgba(42, 43, 106, 0.2);
 }
 
 .floating-icon.design { 
   color: var(--uxui-color); 
   animation: floating 8s ease-in-out infinite 1.5s;
+  border: 2px solid rgba(53, 79, 162, 0.2);
 }
 
 .floating-icon.marketing { 
   color: var(--marketing-color); 
   animation: floating 7s ease-in-out infinite 0.3s;
+  border: 2px solid rgba(255, 198, 21, 0.2);
 }
 
 @keyframes floating {
@@ -220,6 +250,12 @@
     padding: 0.75rem 1.875rem;
     font-size: 1.1rem;
   }
+  
+  .floating-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.7rem;
+  }
 }
 
 @media (max-width: 30em) {
@@ -252,5 +288,15 @@
     font-size: 1.3rem;
     width: 1.5625rem;
     height: 1.5625rem;
+  }
+  
+  .floating-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+  
+  .gigaversity-tagline {
+    font-size: 0.9rem;
   }
 }

@@ -20,6 +20,42 @@ const AnimatedBackground = () => {
     gridPattern.className = 'background-grid';
     backgroundElement.appendChild(gridPattern);
     
+    // Add Gigaversity branding elements
+    const brandingElements = [
+      { char: 'G', size: 120, color: 'rgba(39, 40, 108, 0.03)' },
+      { char: 'I', size: 100, color: 'rgba(66, 123, 191, 0.03)' },
+      { char: 'G', size: 140, color: 'rgba(39, 40, 108, 0.025)' },
+      { char: 'A', size: 130, color: 'rgba(96, 202, 230, 0.03)' },
+    ];
+    
+    // Position branding elements
+    brandingElements.forEach((element, index) => {
+      const brandElement = document.createElement('div');
+      brandElement.className = 'brand-element';
+      brandElement.textContent = element.char;
+      brandElement.style.fontSize = `${element.size}px`;
+      brandElement.style.color = element.color;
+      
+      // Position randomly but spaced out
+      const section = index / brandingElements.length;
+      brandElement.style.left = `${section * 80 + Math.random() * 15}%`;
+      brandElement.style.top = `${10 + Math.random() * 70}%`;
+      
+      backgroundElement.appendChild(brandElement);
+      
+      // Animate branding elements with subtle floating
+      anime({
+        targets: brandElement,
+        translateY: () => anime.random(-20, 20),
+        translateX: () => anime.random(-10, 10),
+        rotate: () => anime.random(-5, 5),
+        duration: () => anime.random(15000, 25000),
+        easing: 'easeInOutQuad',
+        direction: 'alternate',
+        loop: true
+      });
+    });
+    
     // Create and animate particles
     for (let i = 0; i < particleCount; i++) {
       const particle = document.createElement('div');
@@ -31,13 +67,15 @@ const AnimatedBackground = () => {
       const rotation = Math.random() * 360;
       const isCircle = Math.random() > 0.7;
       
-      // Assign colors based on career paths
+      // Assign colors based on Gigaversity palette
       const colors = [
-        'var(--fullstack-color)',
-        'var(--datascience-color)',
-        'var(--marketing-color)',
-        'var(--cybersecurity-color)',
-        'var(--uxui-color)'
+        '#27286c', // Primary blue
+        '#60cae6', // Secondary blue
+        '#233f94', // Medium blue
+        '#427bbf', // Bright blue
+        '#ffc615', // Yellow accent
+        '#2a2b6a', // Deep navy
+        '#354fa2'  // Darker blue
       ];
       
       const color = colors[Math.floor(Math.random() * colors.length)];
@@ -84,13 +122,15 @@ const AnimatedBackground = () => {
       blurEffect.style.left = `${Math.random() * 100}vw`;
       blurEffect.style.top = `${Math.random() * 100}vh`;
       
-      // Random color from the theme with very low opacity
+      // Random color from the Gigaversity palette with very low opacity
       const colors = [
-        'var(--fullstack-color)',
-        'var(--datascience-color)',
-        'var(--marketing-color)',
-        'var(--cybersecurity-color)',
-        'var(--uxui-color)'
+        '#27286c', // Primary blue
+        '#60cae6', // Secondary blue
+        '#233f94', // Medium blue
+        '#427bbf', // Bright blue
+        '#ffc615', // Yellow accent
+        '#2a2b6a', // Deep navy
+        '#354fa2'  // Darker blue
       ];
       
       const color = colors[Math.floor(Math.random() * colors.length)];

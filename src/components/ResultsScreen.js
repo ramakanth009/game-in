@@ -13,6 +13,7 @@ const ResultsScreen = ({ result, onRestart }) => {
   const skillsRef = useRef(null);
   const careersRef = useRef(null);
   const buttonsRef = useRef(null);
+  const gigaLogoRef = useRef(null);
 
   useEffect(() => {
     // Show loader, then results with appropriate timing
@@ -26,11 +27,20 @@ const ResultsScreen = ({ result, onRestart }) => {
         duration: 600
       });
       
+      // Animate the Giga logo first
+      timeline.add({
+        targets: gigaLogoRef.current,
+        opacity: [0, 1],
+        scale: [0.5, 1],
+        duration: 800,
+        easing: 'easeOutElastic(1, 0.8)'
+      });
+      
       timeline.add({
         targets: profileRef.current,
         opacity: [0, 1],
         translateY: [30, 0]
-      });
+      }, '-=300');
       
       timeline.add({
         targets: statsRef.current,
@@ -60,13 +70,14 @@ const ResultsScreen = ({ result, onRestart }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Create confetti animation for celebration effect
+  // Create confetti animation for celebration effect with Gigaversity colors
   const createConfetti = () => {
     const confettiContainer = document.createElement('div');
     confettiContainer.className = 'confetti-container';
     document.body.appendChild(confettiContainer);
     
-    const colors = ['#ff4d6d', '#4ecdc4', '#6366f1', '#8b5cf6', '#f59e0b'];
+    // Use Gigaversity brand colors
+    const colors = ['#27286c', '#60cae6', '#233f94', '#427bbf', '#ffc615', '#354fa2'];
     const confettiCount = 100;
     
     for (let i = 0; i < confettiCount; i++) {
@@ -113,11 +124,11 @@ const ResultsScreen = ({ result, onRestart }) => {
   // Handle share result with better error handling
   const handleShare = () => {
     try {
-      const shareText = `I discovered my ideal tech career path: ${result.data.name}! Find yours with the Tech Career Path Finder!`;
+      const shareText = `I discovered my ideal tech career path at Gigaversity: ${result.data.name}! Find yours at gigaversity.in`;
       
       if (navigator.share) {
         navigator.share({
-          title: 'My Tech Career Path',
+          title: 'My Tech Career Path | Gigaversity',
           text: shareText,
           url: window.location.href
         }).catch(err => {
@@ -171,28 +182,28 @@ const ResultsScreen = ({ result, onRestart }) => {
   const getProfileEmojiBackground = () => {
     const path = result.path;
     const colors = {
-      fullstack: 'rgba(99, 102, 241, 0.15)',
-      datascience: 'rgba(139, 92, 246, 0.15)',
-      marketing: 'rgba(236, 72, 153, 0.15)',
-      cybersecurity: 'rgba(16, 185, 129, 0.15)',
-      uxui: 'rgba(245, 158, 11, 0.15)'
+      fullstack: 'rgba(35, 63, 148, 0.15)',
+      datascience: 'rgba(66, 123, 191, 0.15)',
+      marketing: 'rgba(255, 198, 21, 0.15)',
+      cybersecurity: 'rgba(42, 43, 106, 0.15)',
+      uxui: 'rgba(53, 79, 162, 0.15)'
     };
     
-    return colors[path] || 'rgba(99, 102, 241, 0.15)';
+    return colors[path] || 'rgba(39, 40, 108, 0.15)';
   };
 
   // Get color for profile details based on career path
   const getProfileDetailsBackground = () => {
     const path = result.path;
     const colors = {
-      fullstack: 'rgba(99, 102, 241, 0.1)',
-      datascience: 'rgba(139, 92, 246, 0.1)',
-      marketing: 'rgba(236, 72, 153, 0.1)',
-      cybersecurity: 'rgba(16, 185, 129, 0.1)',
-      uxui: 'rgba(245, 158, 11, 0.1)'
+      fullstack: 'rgba(35, 63, 148, 0.1)',
+      datascience: 'rgba(66, 123, 191, 0.1)',
+      marketing: 'rgba(255, 198, 21, 0.1)',
+      cybersecurity: 'rgba(42, 43, 106, 0.1)',
+      uxui: 'rgba(53, 79, 162, 0.1)'
     };
     
-    return colors[path] || 'rgba(99, 102, 241, 0.1)';
+    return colors[path] || 'rgba(39, 40, 108, 0.1)';
   };
 
   // If result is not available yet, show error
@@ -217,7 +228,7 @@ const ResultsScreen = ({ result, onRestart }) => {
     <div className="results-screen">
       <div className="results-header">
         <h2 className="results-title">Your Ideal Tech Career</h2>
-        <p className="results-subtitle">Based on your preferences</p>
+        <p className="results-subtitle">Based on your personality and preferences</p>
       </div>
       
       {!isResultsVisible ? (
@@ -229,6 +240,10 @@ const ResultsScreen = ({ result, onRestart }) => {
         </div>
       ) : (
         <div className="results-content" ref={resultsContentRef}>
+          <div className="giga-emblem" ref={gigaLogoRef}>
+            <div className="giga-badge">Powered by Gigaversity</div>
+          </div>
+          
           <div className="profile-header" ref={profileRef}>
             <div 
               className="profile-emoji" 
@@ -257,25 +272,25 @@ const ResultsScreen = ({ result, onRestart }) => {
           
           <div className="profile-stats" ref={statsRef}>
             <div className="stat">
-              <div className="stat-value" style={{ color: 'var(--uxui-color)' }}>
+              <div className="stat-value" style={{ color: '#f59e0b' }}>
                 {Math.round(normalizedTraits.creative)}%
               </div>
               <div className="stat-label">Creative</div>
             </div>
             <div className="stat">
-              <div className="stat-value" style={{ color: 'var(--datascience-color)' }}>
+              <div className="stat-value" style={{ color: '#8b5cf6' }}>
                 {Math.round(normalizedTraits.analytical)}%
               </div>
               <div className="stat-label">Analytical</div>
             </div>
             <div className="stat">
-              <div className="stat-value" style={{ color: 'var(--marketing-color)' }}>
+              <div className="stat-value" style={{ color: '#ec4899' }}>
                 {Math.round(normalizedTraits.social)}%
               </div>
               <div className="stat-label">Social</div>
             </div>
             <div className="stat">
-              <div className="stat-value" style={{ color: 'var(--cybersecurity-color)' }}>
+              <div className="stat-value" style={{ color: '#10b981' }}>
                 {Math.round(normalizedTraits.technical)}%
               </div>
               <div className="stat-label">Technical</div>
@@ -316,6 +331,11 @@ const ResultsScreen = ({ result, onRestart }) => {
                 </li>
               ))}
             </ul>
+          </div>
+          
+          <div className="gigaversity-cta">
+            <p>Want to learn more about becoming a <strong>{data.name}</strong>?</p>
+            <p>Visit <a href="https://gigaversity.in" target="_blank" rel="noopener noreferrer">gigaversity.in</a> to explore our programs!</p>
           </div>
           
           <div className="action-buttons" ref={buttonsRef}>

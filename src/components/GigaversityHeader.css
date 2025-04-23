@@ -1,0 +1,39 @@
+.gigaversity-header {
+  padding: 0.9375rem 1.25rem;
+}
+
+.logo-container {
+  height: 3.75rem;
+}
+
+.sound-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+/* Media Queries */
+@media (max-width: 48em) {
+  .gigaversity-header {
+    padding: 0.625rem 0.9375rem;
+  }
+  
+  .logo-container {
+    height: 3.125rem;
+  }
+  
+  .sound-toggle {
+    width: 2.1875rem;
+    height: 2.1875rem;
+  }
+}
+
+@media (max-width: 30em) {
+  .logo-container {
+    height: 2.5rem;
+  }
+  
+  .sound-toggle {
+    width: 1.875rem;
+    height: 1.875rem;
+  }
+}

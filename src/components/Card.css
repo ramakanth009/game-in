@@ -1,5 +1,5 @@
 /* 
- * Enhanced Card Component
+ * Enhanced Card Component with Gigaversity styling
  * Optimized for smooth swiping experience with hardware-accelerated animations
  */
 
@@ -44,7 +44,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(78, 205, 196, 0.05));
+  background: linear-gradient(135deg, rgba(39, 40, 108, 0.05), rgba(96, 202, 230, 0.05));
   opacity: 0.5;
   z-index: -1;
   pointer-events: none;
@@ -53,7 +53,7 @@
 .card-title {
   font-size: 1.8rem;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
   color: var(--primary-color);
   z-index: 2;
   font-weight: 700;
@@ -62,7 +62,7 @@
 .card-subtitle {
   font-size: 1rem;
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 1.5625rem;
   color: #666;
   font-style: italic;
   z-index: 2;
@@ -106,7 +106,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, rgba(99, 102, 241, 0.1), rgba(78, 205, 196, 0.1));
+  background: linear-gradient(45deg, rgba(39, 40, 108, 0.1), rgba(96, 202, 230, 0.1));
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 0;
@@ -130,17 +130,53 @@
   text-align: center;
 }
 
+/* Enhanced emoji container with better styling */
 .option-emoji {
   font-size: 3.5rem;
   margin-bottom: 0.9375rem;
-  display: inline-block;
+  width: 5.625rem;
+  height: 5.625rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.4));
+  box-shadow: 
+    0 6px 16px rgba(39, 40, 108, 0.1),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.05),
+    inset 0 2px 5px rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
   
   /* More sophisticated animation curve for emoji bounce */
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* Add subtle gradient glow effect based on option type */
+.option:nth-child(1) .option-emoji {
+  background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.9), rgba(66, 123, 191, 0.2));
+}
+
+.option:nth-child(2) .option-emoji {
+  background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.9), rgba(255, 198, 21, 0.2));
+}
+
+/* Add subtle decorative elements around emoji */
+.option-emoji::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.05), transparent 50%);
+  z-index: -1;
+}
+
 .option.highlighted .option-emoji {
   transform: scale(1.15);
+  box-shadow: 
+    0 10px 20px rgba(39, 40, 108, 0.15),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.05),
+    inset 0 2px 5px rgba(255, 255, 255, 0.8);
 }
 
 .option-text {
@@ -222,7 +258,7 @@
 .option:hover {
   transform: translate3d(0, -3px, 0);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(39, 40, 108, 0.3);
 }
 
 /* Special class for when the card is actively being dragged */
@@ -270,16 +306,11 @@
   .card {
     padding: 1.25rem;
     min-height: 45vh;
-    max-width: 90vw;
-  }
-  
-  .card-title {
-    font-size: 1.6rem;
   }
   
   .option-emoji {
-    font-size: 3rem;
-    margin-bottom: 0.625rem;
+    width: 5rem;
+    height: 5rem;
   }
   
   .option {
@@ -291,28 +322,15 @@
   .card {
     padding: 0.9375rem;
     min-height: 40vh;
-    max-width: 95vw;
     border-radius: 1rem;
   }
   
-  .card-title {
-    font-size: 1.4rem;
+  .option-emoji {
+    width: 4.375rem;
+    height: 4.375rem;
   }
   
   .option {
-    padding: 0.9375rem 0.625rem;
     min-height: 8.125rem;
-  }
-  
-  .option-emoji {
-    font-size: 2.8rem;
-  }
-  
-  .option-text {
-    font-size: 1.2rem;
-  }
-  
-  .option-description {
-    font-size: 0.8rem;
   }
 }
