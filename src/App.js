@@ -4,7 +4,6 @@ import WelcomeScreen from './components/WelcomeScreen';
 import GameScreen from './components/GameScreen';
 import ResultsScreen from './components/ResultsScreen';
 import AnimatedBackground from './components/AnimatedBackground';
-import SoundToggle from './components/SoundToggle';
 import './App.css';
 
 const App = () => {
@@ -228,10 +227,7 @@ const App = () => {
     <div className="app-container">
       <AnimatedBackground />
       
-      <SoundToggle 
-        soundEnabled={soundEnabled} 
-        toggleSound={toggleSound} 
-      />
+      
       
       <div className="content-wrapper">
         {!gameStarted ? (
